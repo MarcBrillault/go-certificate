@@ -11,12 +11,12 @@ import (
 
 func main() {
 	outputType := flag.String("type", "pdf", "Output type of the certificate")
+	csvName := flag.String("file", "students.csv", "The CSV file to parse")
 	flag.Parse()
 
 	var err error
 
-	csvName := "students.csv"
-	certs, err := cert.ParseCsv(csvName)
+	certs, err := cert.ParseCsv(*csvName)
 	if err != nil {
 		fmt.Printf("Unable to open CSV file '%v': %v", csvName, err)
 		os.Exit(1)
