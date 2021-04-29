@@ -35,6 +35,8 @@ func (p *PdfSaver) Save(cert cert.Cert) error {
 	background(pdf)
 
 	header(pdf, &cert)
+	body(pdf, &cert)
+	footer(pdf)
 
 	// save file
 	file := fmt.Sprintf("%v.pdf", cert.LabelTitle)
@@ -64,7 +66,6 @@ func header(pdf *gofpdf.Fpdf, c *cert.Cert) {
 
 	margin := 30.0
 	marginH := 20.0
-	// x := 0.0
 	imageWidth := 30.0
 	pageWidth, _ := pdf.GetPageSize()
 	filename := "img/gopher.png"
@@ -74,4 +75,36 @@ func header(pdf *gofpdf.Fpdf, c *cert.Cert) {
 
 	pdf.SetFont("Helvetica", "", 40)
 	pdf.WriteAligned(0, 50, c.LabelCompletion, "C")
+}
+
+func body(pdf *gofpdf.Fpdf, c *cert.Cert) {
+	pdf.Ln(30)
+	pdf.SetFont("Helvetica", "I", 20)
+	pdf.WriteAligned(0, 50, c.LabelPresented, "C")
+
+	pdf.Ln(30)
+	pdf.SetFont("Times", "B", 40)
+	pdf.WriteAligned(0, 50, c.Name, "C")
+
+	pdf.Ln(30)
+	pdf.SetFont("Helvetica", "I", 20)
+	pdf.WriteAligned(0, 50, c.LabelParticipation, "C")
+
+	pdf.Ln(30)
+	pdf.SetFont("Helvetica", "I", 15)
+	pdf.WriteAligned(0, 50, c.LabelDate, "C")
+}
+
+func footer(pdf *gofpdf.Fpdf) {
+	opts := gofpdf.ImageOptions{
+		ImageType: "png",
+	}
+
+	margin := 20.0
+	marginH := 10.0
+	imageWidth := 50.0
+	pageWidth, pageHeight := pdf.GetPageSize()
+	filename := "img/stamp.png"
+
+	pdf.ImageOptions(filename, pageWidth-imageWidth-margin, pageHeight-imageWidth-marginH, imageWidth, 0, false, opts, 0, "")
 }
