@@ -16,6 +16,12 @@ func main() {
 
 	var err error
 
+	saver, err := savers.GetSaver(*outputType, "output")
+	if err != nil {
+		fmt.Printf("Could not create generator: %v", err)
+		os.Exit(1)
+	}
+
 	certs, err := cert.ParseCsv(*csvName)
 	if err != nil {
 		fmt.Printf("Unable to open CSV file '%v': %v", csvName, err)
@@ -23,12 +29,9 @@ func main() {
 	}
 
 	for _, cert := range certs {
-		saver, err := savers.GetSaver(*outputType, "output")
+		err := saver.Save(*cert)
 		if err != nil {
-			fmt.Printf("Could not create generator: %v", err)
-			os.Exit(1)
+			fmt.Printf("Error generating certificate: %v\n", err)
 		}
-
-		saver.Save(*cert)
 	}
 }
